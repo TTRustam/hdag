@@ -80,7 +80,9 @@ daggers <-
          ex = rev(cumsum(rev(lx))) / lx,
          edag = dx * ex) |> 
   filter(age <= 110) |> 
-  # calculate transfers
+  # calculate transfers;
+  # note UDt and HDt together sum to 1, which
+  # means all transitions together > 1.
   mutate(HDt = HD * lh,
          HUt = HU * lh,
          UHt = UH * lu,
@@ -88,15 +90,15 @@ daggers <-
   # t suffix stands for transfers
     mutate(
       # HLE
-      HLEdag_hu = HUt * (int + lead(HLEh, default = 0) - lead(HLEu, default = 0)),
-      HLEdag_hd =  HDt * HLEh,
-      HLEdag_uh =  UHt * (-int + lead(HLEu, default = 0) - lead(HLEh, default = 0)),
-      HLEdag_ud =  UDt * HLEu,
-      # ULE
-      ULEdag_hu =  HUt * (-int + lead(ULEh, default = 0) - lead(ULEu, default = 0)),
-      ULEdag_hd =  HDt * ULEh,
-      ULEdag_uh =  UHt * (int + lead(ULEu, default = 0) - lead(ULEh, default = 0)),
-      ULEdag_ud =  UDt * ULEu,
+      HLEdag_hu = HUt * (int + lead(HLEh, n = int, default = 0) - lead(HLEu, n = int, default = 0)),
+      HLEdag_hd = HDt * HLEh,
+      HLEdag_uh = UHt * (-int + lead(HLEu, n = int,default = 0) - lead(HLEh, n = int,default = 0)),
+      HLEdag_ud = UDt * HLEu,
+      # ULE      
+      ULEdag_hu = HUt * (-int + lead(ULEh, n = int,default = 0) - lead(ULEu, n = int,default = 0)),
+      ULEdag_hd = HDt * ULEh,
+      ULEdag_uh = UHt * (int + lead(ULEu, n = int,default = 0) - lead(ULEh, n = int,default = 0)),
+      ULEdag_ud = UDt * ULEu,
       # LE
       LEdag_hu = ULEdag_hu + HLEdag_hu,
       LEdag_hd = ULEdag_hd + HLEdag_hd,
@@ -126,7 +128,7 @@ daggers <-
          ULEdag_xdw = ULEh * HDt / sum(dx) +
                      ULEu * UDt / sum(dx),
          LEdag_xdw = HLEdag_xdw + ULEdag_xdw
-         )
+         ) 
      
 # survey results so far
  daggers |>
