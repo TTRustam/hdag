@@ -51,8 +51,5 @@ source("R/08_hdag.R")
 # 09 calculate 2d manhattan inequality to compare with hdag
 source("R/09_manhattan.R")
 
-# 10 generate figures for the main manuscript and appendix
-source("R/10_figures_main.R")
-source("R/11_figures_appendix.R")
 
 
